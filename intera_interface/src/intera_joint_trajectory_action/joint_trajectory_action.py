@@ -179,10 +179,10 @@ class JointTrajectoryActionServer(object):
         self._fdbk.desired.time_from_start = rospy.Duration.from_sec(cur_time)
         self._fdbk.actual.positions = self._get_current_position(jnt_names)
         self._fdbk.actual.time_from_start = rospy.Duration.from_sec(cur_time)
-        self._fdbk.error.positions = map(operator.sub,
+        self._fdbk.error.positions = list(map(operator.sub,
                                          self._fdbk.desired.positions,
                                          self._fdbk.actual.positions
-                                        )
+                                         ))
         self._fdbk.error.time_from_start = rospy.Duration.from_sec(cur_time)
         self._server.publish_feedback(self._fdbk)
 
