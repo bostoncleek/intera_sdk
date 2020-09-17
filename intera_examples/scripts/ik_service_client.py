@@ -72,7 +72,7 @@ def ik_service_client(limb = "right", use_advanced_options = False):
         ikreq.seed_angles.append(seed)
 
         # Once the primary IK task is solved, the solver will then try to bias the
-        # the joint angles toward the goal joint configuration. The null space is 
+        # the joint angles toward the goal joint configuration. The null space is
         # the extra degrees of freedom the joints can move without affecting the
         # primary IK task.
         ikreq.use_nullspace_goal.append(True)
@@ -90,7 +90,7 @@ def ik_service_client(limb = "right", use_advanced_options = False):
     try:
         rospy.wait_for_service(ns, 5.0)
         resp = iksvc(ikreq)
-    except (rospy.ServiceException, rospy.ROSException), e:
+    except (rospy.ServiceException, rospy.ROSException) as e:
         rospy.logerr("Service call failed: %s" % (e,))
         return False
 

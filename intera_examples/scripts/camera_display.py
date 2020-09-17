@@ -23,13 +23,13 @@ from cv_bridge import CvBridge, CvBridgeError
 import rospy
 import intera_interface
 
-def show_image_callback(img_data, (edge_detection, window_name)):
+def show_image_callback(img_data, edge_detection, window_name):
     """The callback function to show image by using CvBridge and cv
     """
     bridge = CvBridge()
     try:
         cv_image = bridge.imgmsg_to_cv2(img_data, "bgr8")
-    except CvBridgeError, err:
+    except CvBridgeError as err:
         rospy.logerr(err)
         return
     if edge_detection == True:
