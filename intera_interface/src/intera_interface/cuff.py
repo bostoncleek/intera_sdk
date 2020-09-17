@@ -14,9 +14,9 @@
 
 import rospy
 import intera_dataflow
-from intera_io import IODeviceInterface
+from intera_io.io_interface import IODeviceInterface
 from intera_core_msgs.msg import IODeviceConfiguration
-from robot_params import RobotParams
+from intera_interface.robot_params import RobotParams
 
 
 class Cuff(object):

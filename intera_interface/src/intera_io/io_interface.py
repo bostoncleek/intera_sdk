@@ -20,7 +20,7 @@ import threading
 import uuid
 from threading import Lock
 import intera_dataflow
-from io_command import SetCommand
+from intera_io.io_command import SetCommand
 
 from intera_core_msgs.msg import (
     IODeviceConfiguration,

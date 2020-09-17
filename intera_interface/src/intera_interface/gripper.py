@@ -15,7 +15,7 @@
 import rospy
 from intera_core_msgs.msg import IONodeConfiguration
 import intera_dataflow
-from intera_io import IODeviceInterface
+from intera_io.io_interface import IODeviceInterface
 
 
 class Gripper(object):

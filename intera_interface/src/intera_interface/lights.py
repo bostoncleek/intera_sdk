@@ -13,7 +13,7 @@
 # limitations under the License.
 
 import rospy
-from intera_io import IODeviceInterface
+from intera_io.io_interface import IODeviceInterface
 
 
 class Lights(object):

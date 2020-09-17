@@ -47,8 +47,8 @@ from intera_core_msgs.srv import (
     SolvePositionFK,
     SolvePositionFKRequest
 )
-import settings
-from robot_params import RobotParams
+from intera_interface import settings
+from intera_interface.robot_params import RobotParams
 
 
 class Limb(object):
@@ -634,7 +634,7 @@ class Limb(object):
 
         try:
             resp = self._iksvc(ikreq)
-        except (rospy.ServiceException, rospy.ROSException), e:
+        except (rospy.ServiceException, rospy.ROSException) as e:
             rospy.logerr("IK Service call failed: %s" % (e,))
             return False
         limb_joints = {}
@@ -669,7 +669,7 @@ class Limb(object):
         fkreq.tip_names.append(end_point)
         try:
             resp = self._fksvc(fkreq)
-        except (rospy.ServiceException, rospy.ROSException), e:
+        except (rospy.ServiceException, rospy.ROSException) as e:
             rospy.logerr("FK Service call failed: %s" % (e,))
             return False
         return resp

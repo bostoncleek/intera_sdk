@@ -18,7 +18,7 @@ import uuid
 import rospy
 
 import intera_dataflow
-from intera_io import IODeviceInterface
+from intera_io.io_interface import IODeviceInterface
 
 class Navigator(object):
     """
@@ -134,4 +134,3 @@ class Navigator(object):
 
     def _get_item_state(self, item_name):
         return self._navigator_io.get_signal_value(item_name)
-
