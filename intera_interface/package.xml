@@ -1,7 +1,10 @@
 <?xml version="1.0"?>
-<package>
+<?xml-model
+  href="http://download.ros.org/schema/package_format3.xsd"
+  schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
   <name>intera_interface</name>
-  <version>5.3.0</version>
+  <version>5.4.0</version>
   <description>
     Python interface classes for control of
     Intera-enable Robots from Rethink Robotics.
@@ -21,29 +24,22 @@
   <author>Rethink Robotics Inc.</author>
 
   <buildtool_depend>catkin</buildtool_depend>
-  <build_depend>cv_bridge</build_depend>
-  <build_depend>rospy</build_depend>
-  <build_depend>actionlib</build_depend>
-  <build_depend>intera_core_msgs</build_depend>
-  <build_depend>intera_motion_msgs</build_depend>
-  <build_depend>control_msgs</build_depend>
-  <build_depend>dynamic_reconfigure</build_depend>
-  <build_depend>sensor_msgs</build_depend>
-  <build_depend>std_msgs</build_depend>
-  <build_depend>trajectory_msgs</build_depend>
 
-  <run_depend>cv_bridge</run_depend>
-  <run_depend>rospy</run_depend>
-  <run_depend>actionlib</run_depend>
-  <run_depend>intera_core_msgs</run_depend>
-  <run_depend>intera_motion_msgs</run_depend>
-  <run_depend>control_msgs</run_depend>
-  <run_depend>dynamic_reconfigure</run_depend>
-  <run_depend>sensor_msgs</run_depend>
-  <run_depend>std_msgs</run_depend>
-  <run_depend>trajectory_msgs</run_depend>
-  <run_depend>rospy_message_converter</run_depend>
-  <run_depend>xacro</run_depend>
+  <depend>cv_bridge</depend>
+  <depend>rospy</depend>
+  <depend>actionlib</depend>
+  <depend>intera_core_msgs</depend>
+  <depend>intera_motion_msgs</depend>
+  <depend>control_msgs</depend>
+  <depend>dynamic_reconfigure</depend>
+  <depend>sensor_msgs</depend>
+  <depend>std_msgs</depend>
+  <depend>trajectory_msgs</depend>
+  <depend>rospy_message_converter</depend>
+  <depend>xacro</depend>
+
+  <buildtool_depend condition="$ROS_PYTHON_VERSION == 3">python3-setuptools</buildtool_depend>
+  <buildtool_depend condition="$ROS_PYTHON_VERSION == 3">python3-catkin-pkg</buildtool_depend>
 
   <export>
     <rosdoc config="rosdoc.yaml" />

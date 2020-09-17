@@ -1,7 +1,10 @@
 <?xml version="1.0"?>
-<package>
+<?xml-model
+  href="http://download.ros.org/schema/package_format3.xsd"
+  schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
   <name>intera_sdk</name>
-  <version>5.3.0</version>
+  <version>5.4.0</version>
   <description>
     intera_sdk metapackage containing all of the SDK packages
     for Rethink Robotics' robots.
@@ -22,9 +25,9 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
-  <run_depend>intera_interface</run_depend>
-  <run_depend>intera_examples</run_depend>
-  
+  <exec_depend>intera_interface</exec_depend>
+  <exec_depend>intera_examples</exec_depend>
+
   <export>
     <metapackage/>
   </export>
