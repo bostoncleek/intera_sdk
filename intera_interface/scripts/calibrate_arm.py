@@ -101,7 +101,7 @@ def is_gripper_removed():
     """
     try:
         gripper = intera_interface.get_current_gripper_interface()
-    except Exception, e:
+    except Exception as e:
         return True
     rospy.logerr("Calibration Client: Cannot calibrate with grippers attached."
                  " Remove grippers before calibration!")
@@ -133,7 +133,7 @@ def main():
     rospy.loginfo("Running Calibrate on {0} arm".format(arm))
     try:
         goal_state = ca.start_calibration()
-    except KeyboardInterrupt, e:
+    except KeyboardInterrupt as e:
         error = e
         goal_state = ca.stop_calibration()
 

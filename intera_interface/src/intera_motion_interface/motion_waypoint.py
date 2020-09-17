@@ -26,10 +26,10 @@ from intera_motion_msgs.msg import (
 )
 from sensor_msgs.msg import JointState
 from copy import deepcopy
-from utility_functions import ensure_path_to_file_exists
+from intera_motion_interface.utility_functions import ensure_path_to_file_exists
 from rospy_message_converter import message_converter
 import yaml
-from motion_waypoint_options import MotionWaypointOptions
+from intera_motion_interface.motion_waypoint_options import MotionWaypointOptions
 from intera_interface import Limb
 
 class MotionWaypoint(object):

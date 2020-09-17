@@ -18,7 +18,7 @@
 import rospy
 from intera_motion_msgs.msg import WaypointOptions
 from copy import deepcopy
-from utility_functions import (
+from intera_motion_interface.utility_functions import (
     ensure_path_to_file_exists,
     clamp_float_warn
 )
