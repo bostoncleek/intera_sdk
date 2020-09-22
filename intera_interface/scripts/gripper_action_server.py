@@ -41,9 +41,9 @@ class GripperActionServer(object):
         self._min_pos = self._gripper.MIN_POSITION
         # self._max_vel = self._gripper.MAX_VELOCITY
         # self._min_vel = self._gripper.MIN_VELOCITY
-        # self._gripper.set_dead_zone(0.003)
+        self._gripper.set_dead_zone(0.001)
         self._dead_zone = self._gripper.get_dead_zone()
-        print("Dead zone: ", self._dead_zone)
+        # print("Dead zone: ", self._dead_zone)
         self._timeout = 5.0
 
 
@@ -72,6 +72,7 @@ class GripperActionServer(object):
 
     def _on_gripper_action(self, goal):
         position = max(min(goal.command.position, self._max_pos), self._min_pos)
+        # print("Gripper goal position: ", position)
 
         if self._gripper.has_error():
             rospy.logerr("%s: Gripper error - please restart action server." %
@@ -85,7 +86,7 @@ class GripperActionServer(object):
         self._gripper.start()
 
         # Update commands at 20 Hz and start clock
-        control_rate = rospy.Rate(50.0)
+        control_rate = rospy.Rate(20.0)
         start_time = rospy.get_time()
 
         # Continue commanding goal until success or timeout
@@ -99,6 +100,7 @@ class GripperActionServer(object):
                 return
 
             self._update_feedback(position)
+            # print("Position error: ", fabs(self._gripper.get_position()-position))
 
             if self._check_state(position):
                 self._server.set_succeeded(self._result)
