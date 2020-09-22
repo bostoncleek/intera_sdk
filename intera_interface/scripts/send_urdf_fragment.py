@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 
 # Copyright (c) 2013-2018, Rethink Robotics Inc.
 #
@@ -19,11 +19,7 @@ import sys
 import argparse
 
 import rospy
-try:
-    import xacro_jade as xacro
-except ImportError:
-    import xacro
-
+import xacro
 
 from intera_core_msgs.msg import (
     URDFConfiguration,
@@ -56,6 +52,7 @@ def send_urdf(parent_link, root_joint, urdf_filename, duration):
     # root linkage in your URDF Fragment
     msg.joint = root_joint
     msg.urdf = xacro_parse(urdf_filename)
+    print("Publishing URDF: ", msg.urdf)
     pub = rospy.Publisher('/robot/urdf', URDFConfiguration, queue_size=10)
     rate = rospy.Rate(5) # 5hz
     start = rospy.Time.now()
