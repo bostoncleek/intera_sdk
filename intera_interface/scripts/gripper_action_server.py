@@ -14,6 +14,8 @@ from control_msgs.msg import (
     GripperCommandResult,
 )
 
+# import matplotlib.pyplot as plt
+
 
 class GripperActionServer(object):
     def __init__(self):
@@ -32,6 +34,8 @@ class GripperActionServer(object):
         if not self._gripper.is_calibrated():
             rospy.loginfo("Calibrating gripper")
             self._gripper.calibrate()
+        # calibrate regardless to get good feedback
+        self._gripper.calibrate()
 
         # Action Feedback/Result
         self._fdbk = GripperCommandFeedback()
@@ -39,9 +43,9 @@ class GripperActionServer(object):
 
         self._max_pos = self._gripper.MAX_POSITION
         self._min_pos = self._gripper.MIN_POSITION
-        # self._max_vel = self._gripper.MAX_VELOCITY
-        # self._min_vel = self._gripper.MIN_VELOCITY
-        self._gripper.set_dead_zone(0.001)
+        self._max_vel = self._gripper.MAX_VELOCITY
+        self._min_vel = self._gripper.MIN_VELOCITY
+        self._gripper.set_dead_zone(0.005)
         self._dead_zone = self._gripper.get_dead_zone()
         # print("Dead zone: ", self._dead_zone)
         self._timeout = 5.0
@@ -72,7 +76,6 @@ class GripperActionServer(object):
 
     def _on_gripper_action(self, goal):
         position = max(min(goal.command.position, self._max_pos), self._min_pos)
-        # print("Gripper goal position: ", position)
 
         if self._gripper.has_error():
             rospy.logerr("%s: Gripper error - please restart action server." %
@@ -80,8 +83,7 @@ class GripperActionServer(object):
             self._server.set_aborted()
 
         # Reset feedback/result
-        # Divide by 2 because the goal position is distance between both end-effectors
-        self._update_feedback(float(position/2.0))
+        self._update_feedback(position)
 
         # Prepare to send gripper commands
         self._gripper.start()
@@ -89,6 +91,9 @@ class GripperActionServer(object):
         # Update commands at 20 Hz and start clock
         control_rate = rospy.Rate(20.0)
         start_time = rospy.get_time()
+
+        success = False
+        # pos = []
 
         # Continue commanding goal until success or timeout
         while (((rospy.get_time()-start_time) < self._timeout)
@@ -100,24 +105,38 @@ class GripperActionServer(object):
                 self._server.set_preempted(self._result)
                 return
 
-            # Divide by 2 because the goal position is distance between both end-effectors
-            self._update_feedback(float(position/2.0))
+            # pos.append(self._gripper.get_position())
+            # print("Feedback: ", self._gripper.get_position())
 
-            if self._check_state(float(position/2.0)):
+            self._update_feedback(position)
+
+            if self._check_state(position):
                 self._server.set_succeeded(self._result)
-                return
+                # return
+                success = True
+                break
 
-            # Do not divide by 2 here because this is how the intera firmware works
             self._gripper.set_position(position)
             control_rate.sleep()
 
-        # Gripper failed to achieve goal before timeout/shutdown
-        self._gripper.stop()
-        if not rospy.is_shutdown():
-            rospy.logerr("%s: Gripper Command Not Achieved in Allotted Time" %
-                         (self._action_name,))
-        self._update_feedback(position)
-        self._server.set_aborted(self._result)
+
+        # desired = float(position)
+        # print("Actual: ", self._gripper.get_position(), " Goal: ", desired)
+        # plt.figure(dpi=110,facecolor='w')
+        # plt.plot([0, len(pos)], [desired, desired], color='k', linestyle='-', linewidth=2)
+        # plt.plot(pos, color='b', linestyle='--', linewidth=2)
+        # plt.ylim([0, 0.04])
+        # plt.grid(True)
+        # plt.show()
+
+        if not success:
+            # Gripper failed to achieve goal before timeout/shutdown
+            self._gripper.stop()
+            if not rospy.is_shutdown():
+                rospy.logerr("%s: Gripper Command Not Achieved in Allotted Time" %
+                             (self._action_name,))
+            self._update_feedback(position)
+            self._server.set_aborted(self._result)
 
 
 def main():
