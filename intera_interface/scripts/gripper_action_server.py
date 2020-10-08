@@ -34,8 +34,6 @@ class GripperActionServer(object):
         if not self._gripper.is_calibrated():
             rospy.loginfo("Calibrating gripper")
             self._gripper.calibrate()
-        # calibrate regardless to get good feedback
-        self._gripper.calibrate()
 
         # Action Feedback/Result
         self._fdbk = GripperCommandFeedback()
@@ -48,7 +46,8 @@ class GripperActionServer(object):
         self._gripper.set_dead_zone(0.005)
         self._dead_zone = self._gripper.get_dead_zone()
         # print("Dead zone: ", self._dead_zone)
-        self._timeout = 5.0
+        self._timeout = 2.5
+        self._frequency = 20
 
 
     def _check_state(self, position):
@@ -89,15 +88,39 @@ class GripperActionServer(object):
         self._gripper.start()
 
         # Update commands at 20 Hz and start clock
-        control_rate = rospy.Rate(20.0)
+        control_rate = rospy.Rate(self._frequency)
         start_time = rospy.get_time()
 
-        success = False
+        # success = False
         # pos = []
 
         # Continue commanding goal until success or timeout
-        while (((rospy.get_time()-start_time) < self._timeout)
-                             and not rospy.is_shutdown()):
+        # while (((rospy.get_time()-start_time) < self._timeout)
+        #                      and not rospy.is_shutdown()):
+        #     if self._server.is_preempt_requested():
+        #         self._gripper.stop()
+        #         rospy.loginfo("%s: Gripper Action Preempted" %
+        #                       (self._action_name,))
+        #         self._server.set_preempted(self._result)
+        #         return
+        #
+        #     # pos.append(self._gripper.get_position())
+        #     # print("Feedback: ", self._gripper.get_position())
+        #
+        #     self._update_feedback(position)
+        #
+        #     if self._check_state(position):
+        #         self._server.set_succeeded(self._result)
+        #         # return
+        #         success = True
+        #         break
+        #
+        #     self._gripper.set_position(position)
+        #     control_rate.sleep()
+
+        # Run for full timeout
+        iter = int(self._frequency * self._timeout)
+        for i in range(iter):
             if self._server.is_preempt_requested():
                 self._gripper.stop()
                 rospy.loginfo("%s: Gripper Action Preempted" %
@@ -105,20 +128,17 @@ class GripperActionServer(object):
                 self._server.set_preempted(self._result)
                 return
 
-            # pos.append(self._gripper.get_position())
-            # print("Feedback: ", self._gripper.get_position())
-
-            self._update_feedback(position)
-
-            if self._check_state(position):
-                self._server.set_succeeded(self._result)
-                # return
-                success = True
-                break
-
             self._gripper.set_position(position)
             control_rate.sleep()
 
+        # Assume gripper achieves goal
+        self._fdbk.position = position
+        self._fdbk.effort = self._gripper.get_force()
+        self._fdbk.stalled = not self._gripper.is_moving()
+        self._fdbk.reached_goal = True
+        self._result = self._fdbk
+        self._server.publish_feedback(self._fdbk)
+        self._server.set_succeeded(self._result)
 
         # desired = float(position)
         # print("Actual: ", self._gripper.get_position(), " Goal: ", desired)
@@ -129,14 +149,14 @@ class GripperActionServer(object):
         # plt.grid(True)
         # plt.show()
 
-        if not success:
-            # Gripper failed to achieve goal before timeout/shutdown
-            self._gripper.stop()
-            if not rospy.is_shutdown():
-                rospy.logerr("%s: Gripper Command Not Achieved in Allotted Time" %
-                             (self._action_name,))
-            self._update_feedback(position)
-            self._server.set_aborted(self._result)
+        # if not success:
+        #     # Gripper failed to achieve goal before timeout/shutdown
+        #     self._gripper.stop()
+        #     if not rospy.is_shutdown():
+        #         rospy.logerr("%s: Gripper Command Not Achieved in Allotted Time" %
+        #                      (self._action_name,))
+        #     self._update_feedback(position)
+        #     self._server.set_aborted(self._result)
 
 
 def main():
