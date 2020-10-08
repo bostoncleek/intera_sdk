@@ -22,10 +22,10 @@ class Gripper(object):
     """
     Interface class for a gripper on the Intera Research Robot.
     """
-    # MAX_POSITION = 0.041667
+    MAX_POSITION = 0.041667
     # Based on the hardware this is the acutal max aperature
     # MAX_POSITION = 0.0382
-    MAX_POSITION = 0.0315
+    # MAX_POSITION = 0.0315
     MIN_POSITION = 0.0
     MAX_VELOCITY = 3.0
     MIN_VELOCITY = 0.15
