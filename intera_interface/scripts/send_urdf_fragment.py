@@ -52,7 +52,7 @@ def send_urdf(parent_link, root_joint, urdf_filename, duration):
     # root linkage in your URDF Fragment
     msg.joint = root_joint
     msg.urdf = xacro_parse(urdf_filename)
-    print("Publishing URDF: ", msg.urdf)
+    # print("Publishing URDF: ", msg.urdf)
     pub = rospy.Publisher('/robot/urdf', URDFConfiguration, queue_size=10)
     rate = rospy.Rate(5) # 5hz
     start = rospy.Time.now()
